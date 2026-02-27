@@ -7,7 +7,7 @@ import requests
 
 GEMINI_API_URL = (
     "https://generativelanguage.googleapis.com/v1beta/models/"
-    "gemini-2.0-flash-preview-image-generation:generateContent"
+    "gemini-3.1-flash-image-preview:generateContent"
 )
 
 DEFAULT_IMAGE_DIR = Path.home() / "Documents" / "text2img-mcp" / "images"
