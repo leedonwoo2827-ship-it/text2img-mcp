@@ -2,7 +2,10 @@
 
 텍스트 프롬프트로 AI 이미지를 생성하는 MCP 서버입니다.
 Google Gemini API를 사용하여 제안서, 인포그래픽, 차트 등 비즈니스용 이미지를 생성합니다.
+
 https://ai.google.dev/gemini-api/docs/image-generation?hl=ko Gemini API 공식문서를 참고하였으니 추천 프롬프트를 적용해보세요!
+
+Nano Banana 2: Gemini 3.1 Flash Image Preview 모델 (gemini-3.1-flash-image-preview)을 사용합니다.
 
 
 ## 설치
