@@ -15,13 +15,30 @@ DEFAULT_IMAGE_DIR = Path.home() / "Documents" / "text2img-mcp" / "images"
 VALID_ASPECT_RATIOS = {"1:1", "16:9", "9:16", "4:3", "3:4"}
 
 
+MIME_MAP = {
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".webp": "image/webp",
+    ".gif": "image/gif",
+}
+
+
 def generate_image(
     api_key: str,
     prompt: str,
     output_dir: str = "",
     aspect_ratio: str = "1:1",
+    reference_image: str = "",
 ) -> dict:
     """Gemini API를 호출하여 이미지를 생성하고 파일로 저장한다.
+
+    Args:
+        api_key: Gemini API 키
+        prompt: 이미지 생성 프롬프트
+        output_dir: 저장 디렉토리
+        aspect_ratio: 비율
+        reference_image: 디자인 참고 이미지 파일 경로 (선택)
 
     Returns:
         dict with keys: image_path (str), file_name (str)
@@ -38,13 +55,30 @@ def generate_image(
             f"가능한 값: {', '.join(sorted(VALID_ASPECT_RATIOS))}"
         )
 
-    # Build request
+    # Build request parts
+    parts: list[dict] = [{"text": prompt}]
+
+    # 참고 이미지가 있으면 추가
+    if reference_image:
+        ref_path = Path(reference_image)
+        if not ref_path.exists():
+            raise ValueError(f"참고 이미지 파일을 찾을 수 없습니다: {reference_image}")
+        suffix = ref_path.suffix.lower()
+        mime_type = MIME_MAP.get(suffix)
+        if not mime_type:
+            raise ValueError(
+                f"지원하지 않는 이미지 형식입니다: {suffix}. "
+                f"가능한 형식: {', '.join(MIME_MAP.keys())}"
+            )
+        img_b64 = base64.b64encode(ref_path.read_bytes()).decode("utf-8")
+        parts.append({"inlineData": {"mimeType": mime_type, "data": img_b64}})
+
     generation_config: dict = {"responseModalities": ["TEXT", "IMAGE"]}
     if aspect_ratio != "free":
         generation_config["imageConfig"] = {"aspectRatio": aspect_ratio}
 
     body = {
-        "contents": [{"parts": [{"text": prompt}]}],
+        "contents": [{"parts": parts}],
         "generationConfig": generation_config,
     }
 
