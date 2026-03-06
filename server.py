@@ -21,15 +21,18 @@ def create_proposal_image(
     prompt: str,
     output_dir: str = "",
     aspect_ratio: str = "1:1",
+    reference_image: str = "",
 ) -> str:
     """텍스트 프롬프트로 AI 이미지를 생성합니다 (Gemini API 사용).
 
-    제안서, 인포그래픽, 차트, 슬라이드 등 비즈니스용 이미지를 텍스트 설명만으로 생성합니다.
+    제안서, 인포그래픽, 차트, 슬라이드 등 비즈니스용 이미지를 생성합니다.
+    디자인 참고 이미지를 함께 제공하면 해당 스타일을 반영하여 생성합니다.
 
     Args:
         prompt: 생성할 이미지에 대한 텍스트 설명 (예: "2024년 매출 현황 인포그래픽")
         output_dir: 이미지 저장 디렉토리 경로 (기본: ~/Documents/text2img-mcp/images)
         aspect_ratio: 이미지 비율 - "1:1", "16:9", "9:16", "4:3", "3:4" (기본: "1:1")
+        reference_image: 디자인 참고 이미지 파일의 절대경로 (선택, 예: "D:/design/sample.png")
 
     Returns:
         생성된 이미지 파일의 절대경로와 메타데이터
@@ -42,6 +45,7 @@ def create_proposal_image(
             prompt=prompt,
             output_dir=output_dir,
             aspect_ratio=aspect_ratio,
+            reference_image=reference_image,
         )
 
         # Save metadata to SQLite
