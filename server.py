@@ -22,6 +22,7 @@ def create_proposal_image(
     output_dir: str = "",
     aspect_ratio: str = "1:1",
     reference_image: str = "",
+    project_dir: str = "",
 ) -> str:
     """텍스트 프롬프트로 AI 이미지를 생성합니다 (Gemini API 사용).
 
@@ -33,17 +34,23 @@ def create_proposal_image(
         output_dir: 이미지 저장 디렉토리 경로 (기본: ~/Documents/text2img-mcp/images)
         aspect_ratio: 이미지 비율 - "1:1", "16:9", "9:16", "4:3", "3:4" (기본: "1:1")
         reference_image: 디자인 참고 이미지 파일의 절대경로 (선택, 예: "D:/design/sample.png")
+        project_dir: 프로젝트 폴더 경로 (예: C:/Users/ubion/Documents/proposals/260311-n). 지정 시 images/ 하위에 저장
 
     Returns:
         생성된 이미지 파일의 절대경로와 메타데이터
     """
     api_key = os.environ.get("GEMINI_API_KEY", "")
 
+    # project_dir 지정 시 images/ 하위에 저장
+    actual_output_dir = output_dir
+    if project_dir and not output_dir:
+        actual_output_dir = str(Path(project_dir) / "images")
+
     try:
         result = generate_image(
             api_key=api_key,
             prompt=prompt,
-            output_dir=output_dir,
+            output_dir=actual_output_dir,
             aspect_ratio=aspect_ratio,
             reference_image=reference_image,
         )
